@@ -175,7 +175,6 @@ $(function() {
       $('.login.page .error').html(spp.USERNAME_REQUIREMENT_MESSAGE).stop(true,true).show().delay(500).fadeOut(2000);
       $('.usernameInput').val(newValue);
     }
-    console.log(event.which);
     if (event.which === 13) {
       attemptLogin();
     }
