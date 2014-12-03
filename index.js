@@ -1,4 +1,3 @@
-// Setup basic express server
 var spp = require('./lib/spp.js');
 var _ = require('underscore');
 var express = require('express');
@@ -7,18 +6,14 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
+var usernames = {};
+var rooms = {};
+
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
 
-// Routing
 app.use(express.static(__dirname + '/public'));
-
-// Chatroom
-
-// usernames which are currently connected to the chat
-var usernames = {};
-var rooms = {};
 
 io.on('connection', function (socket) {
 
@@ -48,7 +43,7 @@ io.on('connection', function (socket) {
     usernames[username.toUpperCase()] = username;
 
     console.log('logging in:',username);
-    
+
     socket.emit('login', {
       numUsers: _.size(usernames),
       username: socket.username
