@@ -1,0 +1,26 @@
+{
+  "name": "storypp",
+  "version": "0.0.0",
+  "description": "A story point poker thingy",
+  "main": "index.js",
+  "author": "Mark Streich",
+  "private": true,
+  "license": "BSD",
+  "dependencies": {
+    "underscore": "1.7.0",
+    "express": "3.4.8",
+    "socket.io": "1.0.6",
+    "jquery": "~2.1.1",
+    "socket.io-client": "~1.2.1",
+    "cookie-cutter": "~0.1.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-nodemon": "~0.3.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-concurrent": "~1.0.0",
+    "grunt-browserify": "~3.2.1",
+    "grunt-contrib-htmlmin": "~0.3.0",
+    "grunt-contrib-less": "~0.12.0"
+  }
+}
