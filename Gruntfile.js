@@ -1,7 +1,6 @@
 module.exports = function(grunt) {
-
-  // Project configuration.
   grunt.initConfig({
+
     concurrent: {
       dev: {
         tasks: ['nodemon', 'watch'],
@@ -10,6 +9,7 @@ module.exports = function(grunt) {
         }
       }
     },
+
     nodemon: {
       dev: {
         script: 'index.js',
@@ -29,6 +29,30 @@ module.exports = function(grunt) {
         }
       }
     },
+    
+    watch: {
+      dev: {
+        files: ['.rebooted', './public/*'],
+        options: {
+          livereload: {
+            port: 35728
+          }
+        }
+      },
+      js: {
+        files: ['./src/*.js', './lib/*.js'],
+        tasks: ['browserify']
+      },
+      css: {
+        files: ['./src/*.less'],
+        tasks: ['less']
+      },
+      html: {
+        files: ['./src/*.html'],
+        tasks: ['htmlmin']
+      }
+    },
+
     browserify: {
       dev: {
         src: './src/main.js',
@@ -54,29 +78,8 @@ module.exports = function(grunt) {
           dest: './public/'
         }]
       }
-    },
-    watch: {
-      dev: {
-        files: ['.rebooted', './public/*'],
-        options: {
-          livereload: {
-            port: 35728
-          }
-        }
-      },
-      js: {
-        files: ['./src/*.js', './lib/*.js'],
-        tasks: ['browserify']
-      },
-      css: {
-        files: ['./src/*.less'],
-        tasks: ['less']
-      },
-      html: {
-        files: ['./src/*.html'],
-        tasks: ['htmlmin']
-      }
     }
+
   });
 
   grunt.loadNpmTasks('grunt-nodemon');
