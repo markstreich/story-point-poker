@@ -16,6 +16,7 @@ server.listen(port, function () {
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function (socket) {
+  console.log('new connection:',_.now());
 
   socket.on('new message', function (data) {
     socket.broadcast.emit('new message', {
