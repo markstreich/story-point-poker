@@ -23,8 +23,16 @@ io.on('connection', function (socket) {
     });
   });
 
+
+
+
   socket.on('add user', function (username) {
-    
+
+    if (_.isString(socket.username)) {
+      // already signed in
+      return true;
+    }
+
     if (_.has(usernames, username.toUpperCase())) {
       socket.emit('login error', {
         message: 'Username taken'
@@ -52,7 +60,12 @@ io.on('connection', function (socket) {
       username: socket.username,
       numUsers: _.size(usernames)
     });
+
   });
+
+
+
+
 
   // when the client emits 'typing', we broadcast it to others
   socket.on('typing', function () {
