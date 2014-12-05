@@ -3,7 +3,7 @@ story-point-poker
 Work in progress. This might eventually allow remote teams to play story point poker easily. For now, I'm just hacking around with new languages.
 
 ### Demo server
-* http://spp.gllen.com:3000/spp.html
+* http://spp.gllen.com/
 
 ### Installing
 ```sh
