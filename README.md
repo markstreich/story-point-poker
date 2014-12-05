@@ -10,19 +10,8 @@ Work in progress. This might eventually allow remote teams to play story point p
 git clone https://github.com/markstreich/story-point-poker.git
 cd story-point-poker
 sudo npm install
-```
-
-### Developing
-```sh
 grunt
 ```
-
-### Your local server
-* http://localhost/
-
-### Want a different port?
-* `var port = 1337;` in index.js:5
-* `http://localhost:1337/`
 
 ### See also
 * [iOS/Swift client](https://github.com/markstreich/swift-story-point-poker/)
