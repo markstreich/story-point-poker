@@ -18,7 +18,10 @@ grunt
 ```
 
 ### Your local server
-* http://localhost:3000/spp.html
+* http://localhost/
+
+### Want a different port?
+* `var port = 1337;` in index.js = `http://localhost:1337/`
 
 ### See also
 * [iOS/Swift client](https://github.com/markstreich/swift-story-point-poker/)
