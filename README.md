@@ -21,7 +21,8 @@ grunt
 * http://localhost/
 
 ### Want a different port?
-* `var port = 1337;` in index.js = `http://localhost:1337/`
+* `var port = 1337;` in index.js:5
+* `http://localhost:1337/`
 
 ### See also
 * [iOS/Swift client](https://github.com/markstreich/swift-story-point-poker/)
