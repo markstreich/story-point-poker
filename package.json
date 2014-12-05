@@ -8,8 +8,8 @@
   "license": "BSD",
   "dependencies": {
     "underscore": "1.7.0",
-    "express": "3.4.8",
-    "socket.io": "1.0.6",
+    "express": "~4.10.4",
+    "socket.io": "~1.2.1",
     "jquery": "~2.1.1",
     "socket.io-client": "~1.2.1",
     "cookie-cutter": "~0.1.1"
