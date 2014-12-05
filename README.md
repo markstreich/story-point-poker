@@ -39,18 +39,18 @@ grunt
   * UX: "public" RoomName default ("Change Room" CTA)
 * Voting Mode
   * A vote is called when a room message contains "vote" or begins with "v "
-  * Entire room sees a new window with a 5 second countdown
+  * Room sees a new window with a 5 second countdown, and 10 seconds allowed for voting
   * Chat is disabled, and you can enter a vote (any string)
-  * Once voted, you can see a list of who has/has not voted, you may not change your vote
-  * Voting ends when
-    * Everyone in room votes
-    * 10s
-    * Whichever is first
+* While Voting
+  * You see the vote number, topic (`vote topic 123`) and a list of who has/has not voted
   * Votes are usually numbers, but may be strings
-  * You may not chat when a vote is called
+  * You may not change your vote or chat until Voting ends
+* Voting ends when
+  * Everyone in room votes
+  * Time (10s?) expires
+* After Voting ends
+  * Each user's vote is listed
   * Numerical votes are aggregated: Avg, Min users, Max users
-  * Pie chat of aggregated
-  * each persons vote is listed (ranked 
   * Add href for urls
   * Add img for image urls
   * "Points" system (users, based on median and time voted)
