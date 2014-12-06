@@ -12,7 +12,9 @@ var _ = require('underscore');
 var users = {};
 var rooms = {};
 
-app.use(express.static(__dirname + '/public'));
+app.use('/r/:id', express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/public'));
+
 
 io.on('connection', function (socket) {
   console.log('new connection:',_.now());

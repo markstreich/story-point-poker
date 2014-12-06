@@ -17,13 +17,30 @@ var socket = io();
 
 
 
-if (cookie.get('username')) {
-  $('.usernameInput').val(cookie.get('username'))
-  attemptLogin(cookie.get('username'));
+enterRoomNameFromURI();
+enterUsernameFromCookie();
+autoLoginIfPrefilledValues();
+
+function enterRoomNameFromURI () {
+  var pathArray = window.location.pathname.split( '/' );
+  console.log(pathArray);
+  if (pathArray[1] && pathArray[2] && pathArray[1] === 'r') {
+    $('.roomnameInput').val(spp.cleanRoomname(pathArray[2]));
+  }
 }
 
+function enterUsernameFromCookie () {
+  if (cookie.get('username')) {
+    $('.usernameInput').val(cookie.get('username'))
+    
+  }
+}
 
-
+function autoLoginIfPrefilledValues() {
+  if ($('.usernameInput').val() !== '' && $('.roomnameInput').val() !== '') {
+    attemptLogin();
+  }
+}
 
 function sendMessage () {
   var message = $inputMessage.val();
@@ -124,10 +141,15 @@ function getTypingMessages (data) {
   });
 }
 
-function attemptLogin(attemptedUsername) {
+function attemptLogin() {
+  var loginUsername = $('.usernameInput').val();
+  var loginRoomname = $('.roomnameInput').val();
+  if (loginRoomname === '') {
+    loginRoomname = 'public'
+  }
   socket.emit('join', {
-    username: attemptedUsername,
-    roomname: 'public'
+    username: loginUsername,
+    roomname: loginRoomname
   });
 }
 
@@ -149,7 +171,19 @@ $('.usernameInput').on('keyup change',function (event) {
     $('.usernameInput').val(newValue);
   }
   if (event.which === 13) {
-    attemptLogin($('.usernameInput').val());
+    attemptLogin();
+  }
+});
+
+$('.roomnameInput').on('keyup change',function (event) {
+  var originalValue = $('.roomnameInput').val();
+  var newValue = spp.cleanRoomname(originalValue);
+  if (originalValue !== newValue) {
+    $('.login.page .error').html(spp.ROOMNAME_REQUIREMENT_MESSAGE).stop(true,true).show().delay(500).fadeOut(2000);
+    $('.roomnameInput').val(newValue);
+  }
+  if (event.which === 13) {
+    attemptLogin();
   }
 });
 

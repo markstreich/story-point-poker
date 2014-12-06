@@ -3,7 +3,7 @@ story-point-poker
 Work in progress. This might eventually allow remote teams to play story point poker easily. For now, I'm just hacking around with new languages.
 
 ### Demo server
-* http://spp.gllen.com/
+* http://spp.gllen.com:3000/
 
 ### Installing
 ```sh
@@ -24,9 +24,6 @@ grunt
 * Jquery
 
 ### Todo
-* Rooms
-  * Web: hostname/r/RoomName
-  * UX: "public" RoomName default ("Change Room" CTA)
 * Voting Mode
   * A vote is called when a room message contains "vote" or begins with "v "
   * Room sees a new window with a 5 second countdown, and 10 seconds allowed for voting
