@@ -23,7 +23,6 @@ autoLoginIfPrefilledValues();
 
 function enterRoomNameFromURI () {
   var pathArray = window.location.pathname.split( '/' );
-  console.log(pathArray);
   if (pathArray[1] && pathArray[2] && pathArray[1] === 'r') {
     $('.roomnameInput').val(spp.cleanRoomname(pathArray[2]));
   }

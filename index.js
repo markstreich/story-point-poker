@@ -106,14 +106,11 @@ io.on('connection', function (socket) {
   });
 
 
-  // when the client emits 'typing', we broadcast it to others
   socket.on('typing', function () {
     socket.to(socket.roomID).emit('typing', {
       username: users[socket.userID]
     });
   });
-
-  // when the client emits 'stop typing', we broadcast it to others
   socket.on('stop typing', function () {
     socket.to(socket.roomID).emit('stop typing', {
       username: users[socket.userID]
