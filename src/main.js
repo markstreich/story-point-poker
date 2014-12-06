@@ -9,6 +9,7 @@ var $messages = $('.messages');
 var $inputMessage = $('.inputMessage');
 
 var username;
+var roomname;
 var typing = false;
 var lastTypingTime;
 
@@ -17,6 +18,7 @@ var socket = io();
 
 
 if (cookie.get('username')) {
+  $('.usernameInput').val(cookie.get('username'))
   attemptLogin(cookie.get('username'));
 }
 
@@ -28,10 +30,6 @@ function sendMessage () {
   message = cleanInput(message);
   if (message && username) {
     $inputMessage.val('');
-    addChatMessage({
-      username: username,
-      message: message
-    });
     socket.emit('new message', message);
   }
 }
@@ -127,7 +125,10 @@ function getTypingMessages (data) {
 }
 
 function attemptLogin(attemptedUsername) {
-  socket.emit('add user', attemptedUsername);
+  socket.emit('join', {
+    username: attemptedUsername,
+    roomname: 'public'
+  });
 }
 
 $(window).keydown(function (event) {
@@ -160,6 +161,7 @@ socket.on('login', function (data) {
   $('.login.page').fadeOut();
   $('.chat.page').show();
   username = data.username;
+  roomname = data.roomname;
   cookie.set('username', username);
 });
 
@@ -171,11 +173,11 @@ socket.on('new message', function (data) {
   addChatMessage(data);
 });
 
-socket.on('user joined', function (data) {
-  log(data.username + ' joined');
+socket.on('joined', function (data) {
+  log(data.username + ' joined ' + data.roomname);
 });
 
-socket.on('user left', function (data) {
+socket.on('left', function (data) {
   log(data.username + ' left');
   removeChatTyping(data);
 });
