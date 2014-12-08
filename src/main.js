@@ -17,25 +17,30 @@ var socket = io();
 
 
 
-enterRoomNameFromURI();
-enterUsernameFromCookie();
-autoLoginIfPrefilledValues();
+enterFromURI();
+enterPreviousUsername();
+loginIfFilled();
 
-function enterRoomNameFromURI () {
+function enterFromURI () {
   var pathArray = window.location.pathname.split( '/' );
-  if (pathArray[1] && pathArray[2] && pathArray[1] === 'r') {
-    $('.roomnameInput').val(spp.cleanRoomname(pathArray[2]));
+  if (!pathArray[1] || !pathArray[2] || pathArray[1] !== 'r') {
+    return
   }
+  if (pathArray[3]) {
+    $('.usernameInput').val(spp.cleanRoomname(pathArray[3]));
+  }
+  $('.roomnameInput').val(spp.cleanRoomname(pathArray[2]));
+
+
 }
 
-function enterUsernameFromCookie () {
-  if (cookie.get('username')) {
+function enterPreviousUsername () {
+  if (cookie.get('usernname')) {
     $('.usernameInput').val(cookie.get('username'))
-    
   }
 }
 
-function autoLoginIfPrefilledValues() {
+function loginIfFilled() {
   if ($('.usernameInput').val() !== '' && $('.roomnameInput').val() !== '') {
     attemptLogin();
   }
@@ -46,7 +51,12 @@ function sendMessage () {
   message = cleanInput(message);
   if (message && username) {
     $inputMessage.val('');
-    socket.emit('new message', message);
+    if (message === 'v') {
+      socket.emit('call vote', message);
+    } else {
+      socket.emit('new message', message);
+    }
+    
   }
 }
 
@@ -55,28 +65,6 @@ function log (message, options) {
   addMessageElement($el, options);
 }
 
-function addChatMessage (data, options) {
-  var $typingMessages = getTypingMessages(data);
-  options = options || {};
-  if ($typingMessages.length !== 0) {
-    options.fade = false;
-    $typingMessages.remove();
-  }
-
-  var $usernameDiv = $('<span class="username"/>')
-    .text(data.username)
-    .css('color', spp.getUsernameColor(data.username));
-  var $messageBodyDiv = $('<span class="messageBody">')
-    .text(data.message);
-
-  var typingClass = data.typing ? 'typing' : '';
-  var $messageDiv = $('<li class="message"/>')
-    .data('username', data.username)
-    .addClass(typingClass)
-    .append($usernameDiv, $messageBodyDiv);
-
-  addMessageElement($messageDiv, options);
-}
 
 
 function addChatTyping (data) {
@@ -93,16 +81,12 @@ function removeChatTyping (data) {
 
 function addMessageElement (el, options) {
   var $el = $(el);
-
-  // Setup default options
   if (!options) {
     options = {};
   }
   if (typeof options.fade === 'undefined') {
     options.fade = true;
   }
-
-  // Apply options
   if (options.fade) {
     $el.hide().fadeIn(spp.FADE_TIME);
   }
@@ -122,15 +106,6 @@ function updateTyping () {
       socket.emit('typing');
     }
     lastTypingTime = (new Date()).getTime();
-
-    setTimeout(function () {
-      var typingTimer = (new Date()).getTime();
-      var timeDiff = typingTimer - lastTypingTime;
-      if (timeDiff >= spp.TYPING_TIMER_LENGTH && typing) {
-        socket.emit('stop typing');
-        typing = false;
-      }
-    }, spp.TYPING_TIMER_LENGTH);
   }
 }
 
@@ -205,6 +180,48 @@ socket.on('login error', function (data) {
 socket.on('new message', function (data) {
   addChatMessage(data);
 });
+socket.on('vote called', function (data) {
+  console.log(data);
+  addChatMessage({
+    username: data.username,
+    message: "vote"
+  });
+});
+
+function addChatMessage (data, options) {
+  var $typingMessages = getTypingMessages(data);
+  options = options || {};
+  if ($typingMessages.length !== 0) {
+    options.fade = false;
+    $typingMessages.remove();
+  }
+
+  var $usernameDiv = $('<span class="username"/>')
+    .text(data.username)
+    .css('color', spp.getUsernameColor(data.username));
+  var $messageBodyDiv = $('<span class="messageBody">')
+    .text(data.message);
+
+  var typingClass = data.typing ? 'typing' : '';
+  var $messageDiv = $('<li class="message"/>')
+    .data('username', data.username)
+    .addClass(typingClass)
+    .append($usernameDiv, $messageBodyDiv);
+
+  addMessageElement($messageDiv, options);
+}
+
+
+
+socket.on('polls closed', function (data) {
+  console.log(data);
+  for (var username in data) {
+    addChatMessage({
+      username: username,
+      message: data[username]
+    });
+  }
+});
 
 socket.on('joined', function (data) {
   log(data.username + ' joined ' + data.roomname);
@@ -222,3 +239,4 @@ socket.on('typing', function (data) {
 socket.on('stop typing', function (data) {
   removeChatTyping(data);
 });
+

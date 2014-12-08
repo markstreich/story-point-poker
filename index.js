@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = 3000;
+
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
@@ -13,6 +14,7 @@ var users = {};
 var rooms = {};
 
 app.use('/r/:id', express.static(__dirname + '/public'));
+app.use('/r/:id/:username/', express.static(__dirname + '/public'));
 app.use('/', express.static(__dirname + '/public'));
 
 
@@ -35,6 +37,7 @@ io.on('connection', function (socket) {
   }
 
   socket.on('join', function (data) {
+    console.log(data);
     leave();
 
     if (!_.isString(data.username) || !_.isString(data.username)) {
@@ -93,9 +96,15 @@ io.on('connection', function (socket) {
     console.log(socket.userID,'new message',socket.roomID,':',data);
 
     if (!_.isString(socket.userID) || !_.isString(socket.roomID)) {
-      return;
+      return
     }
     if (!_.isString(data)) {
+      return
+    }
+
+    if (rooms[socket.roomID].vote) {
+      // when a vote is called, messages are votes
+      rooms[socket.roomID].vote.votes[socket.userID] = data;
       return
     }
 
@@ -103,16 +112,48 @@ io.on('connection', function (socket) {
       username: users[socket.userID],
       message: data
     });
+
+
   });
 
 
+  socket.on('call vote', function (data) {
+    console.log(socket.userID,'vote',socket.roomID,':',data);
+
+    if (!_.isString(socket.userID) || !_.isString(socket.roomID)) {
+      return
+    }
+    if (!_.isString(data)) {
+      return
+    }
+    if (rooms[socket.roomID].vote) {
+      return
+    }
+    rooms[socket.roomID].vote = {
+      topic: data,
+      votes: {}
+    }
+    setTimeout(function() {
+      pollsClosed(socket.roomID);
+    }, spp.VOTING_PERIOD_MS);
+
+    io.to(socket.roomID).emit('vote called', {
+      username: users[socket.userID],
+      vote: rooms[socket.roomID].vote
+    });
+
+  });
+
+
+
+
   socket.on('typing', function () {
-    socket.to(socket.roomID).emit('typing', {
+    io.to(socket.roomID).emit('typing', {
       username: users[socket.userID]
     });
   });
   socket.on('stop typing', function () {
-    socket.to(socket.roomID).emit('stop typing', {
+    io.to(socket.roomID).emit('stop typing', {
       username: users[socket.userID]
     });
   });
@@ -121,3 +162,11 @@ io.on('connection', function (socket) {
     leave();
   });
 });
+
+function pollsClosed(roomID) {
+  io.to(roomID).emit('polls closed', rooms[roomID].vote.votes);
+
+  delete rooms[roomID].vote;
+}
+
+
