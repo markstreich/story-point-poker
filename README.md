@@ -25,7 +25,6 @@ grunt
 
 ### Todo
 * Voting Mode
-  * A vote is called when a room message contains "vote" or begins with "v "
   * Room sees a new window with a 5 second countdown, and 10 seconds allowed for voting
   * Chat is disabled, and you can enter a vote (any string)
 * While Voting
