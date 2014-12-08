@@ -181,10 +181,9 @@ socket.on('new message', function (data) {
   addChatMessage(data);
 });
 socket.on('vote called', function (data) {
-  console.log(data);
   addChatMessage({
     username: data.username,
-    message: "vote"
+    message: "vote ->"
   });
 });
 
@@ -214,13 +213,13 @@ function addChatMessage (data, options) {
 
 
 socket.on('polls closed', function (data) {
-  console.log(data);
   for (var username in data) {
     addChatMessage({
       username: username,
       message: data[username]
     });
   }
+  $('li.typing').hide();
 });
 
 socket.on('joined', function (data) {

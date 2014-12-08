@@ -153,6 +153,9 @@ io.on('connection', function (socket) {
     });
   });
   socket.on('stop typing', function () {
+    if (rooms[socket.roomID].vote) {
+      return
+    }
     io.to(socket.roomID).emit('stop typing', {
       username: users[socket.userID]
     });
@@ -168,5 +171,6 @@ function pollsClosed(roomID) {
 
   delete rooms[roomID].vote;
 }
+
 
 
